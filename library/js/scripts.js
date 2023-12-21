@@ -71,10 +71,10 @@ jQuery(document).ready(function($) {
     // add link to google map notfication
     $('.gm-map p').append('<br/><a href="https://jobs.openbiblio.eu/datenschutzerklaerung"><strong>Datenschutzhinweis</strong></a>');
 
-    // shorten links
+    // shorten/truncate links
     $('.stellenangebote p a').each(function() {
-        if($(this).text().length > 100) {
-            $(this).text($(this).text().substring(0,100)+" [...]");
+        if($(this).text().length > 70) {
+            $(this).text($(this).text().substring(0,70)+" [...]");
         }
     });
 

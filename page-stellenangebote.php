@@ -15,7 +15,7 @@ Template Name: Stellenangebote
 							<?php 
 								//query_posts( 'post_type=stellenangebote&post_status=publish');
 								$args = array(
-									'posts_per_page' => '-1',
+									'posts_per_page' => -1,
 									'post_type' => 'stellenangebote',
 									'post_status' => 'publish',
 								);
@@ -43,7 +43,8 @@ Template Name: Stellenangebote
 								</li>
 
 							<?php endwhile; ?>
-							<?php $postCounter = 0; ?>
+							<?php $postCounter = 0; wp_reset_postdata(); ?>
+
 							</ul>
 
 									<?php if (function_exists('bones_page_navi')) { ?>
@@ -64,11 +65,6 @@ Template Name: Stellenangebote
 							</div>
 
 							<?php endif; ?>
-
-							<?php 
-								//wp_reset_query();
-								wp_reset_postdata();
-							?>
 
 						</div> <!-- end #main -->
 

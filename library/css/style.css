@@ -270,9 +270,9 @@ nav ol {
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   box-sizing: border-box;
 }
-/* this CS forms the triangles */
-.job-categories li.current-cat:after,
-.job-categories li:hover:after,
+/* this CSS forms the triangles */
+.job-categories li.current-cat a:first-child:after,
+.job-categories li:hover a:first-child:after,
 .home .all-jobs:after {
     content: '';
     display: block;
@@ -287,6 +287,18 @@ nav ol {
     box-shadow: 0 2px -6px rgba(100, 100, 100, 0.3);
     margin-top: -21px;
     margin-left: -12px;
+}
+.job-categories li.current-cat-ancestor li a:first-child:after {
+    margin-left: 6px;
+}
+.job-categories li.current-cat-ancestor:hover li a:first-child:after {
+    margin-left: -12px;
+}
+.job-categories li li:hover {
+    box-shadow: 0;
+}
+.job-categories li ul.children {
+  padding: 0 12px;
 }
 .job-categories li.current-cat:before,
 .job-categories li:hover:before {
@@ -309,7 +321,15 @@ nav ol {
 }
 
 .feed-link {
-  margin-left: 10px;
+  /* margin-left: 10px; */
+}
+
+.job-categories li.cat-item-3039 {
+  background-image: url(https://s.w.org/images/core/emoji/13.1.0/svg/1f1fa-1f1e6.svg);
+  background-repeat: no-repeat;
+  background-position: -104px;
+  padding-left: 28px;
+  background-size: 70% 70%;
 }
 
 /* ==========================================================================
@@ -358,6 +378,7 @@ form {
  .gform_wrapper {
   max-width: 100% !important;
   margin: 0;
+  position: relative;
  }
 fieldset,
 .gform_wrapper form {
@@ -371,10 +392,14 @@ fieldset,
   position: absolute;
   top: -0.7em;
   left: 10px;
+  display: flex;
 }
 .gform_heading,
 .gform_title {
   margin: 0 !important;
+}
+.gform_heading .gform_required_legend {
+  margin: 0 0 0 10px;
 }
 .gform_title {
   text-align: left;
@@ -385,7 +410,7 @@ fieldset,
   font-family: "OpenSansBold", sans-serif;
 }
 .gform_wrapper .gfield {
-  margin: 0 0 2em 0;
+  margin: 0 0 15px 0;
 }
 .gform_wrapper .gfield_description, .gform_wrapper .field_description_below .gfield_description {
   padding: 0;
@@ -626,6 +651,9 @@ input[type="color"],
   padding: 20px 10px;
   margin: 0;
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+}
+.gform_wrapper form {
+  padding: 30px 10px;
 }
 .eingabe-formular fieldset div {
   margin: 1em 0 2em 0;
@@ -943,7 +971,7 @@ span.amp {
   background: #ebe16f;
 }
 .alert-info {
-  margin: 10px;
+  margin: 50px 10px 10px;
   padding: 5px 18px;
   border: 1px solid;
   border-color: #bfe4f4;
@@ -1247,6 +1275,9 @@ h1,
   font-size: 2em;
   line-height: 1.333em;
 }
+h1.archive-title {
+  margin-bottom: 30px;
+}
 h2,
 .h2 {
   font-size: 1.25em;
@@ -1374,6 +1405,13 @@ and more scalable.
 		*/
 
 }
+.nav li#menu-item-73532 {
+  background-image: url(https://s.w.org/images/core/emoji/13.1.0/svg/1f1fa-1f1e6.svg);
+  background-repeat: no-repeat;
+  background-position: -30px;
+  padding-left: 20px;
+  background-size: 50% 50%;
+}
 .nav li a {
   display: block;
   padding: 15px 15px;
@@ -1391,8 +1429,9 @@ and more scalable.
 .nav li ul.children li a {
   padding-left: 30px;
 }
-.nav li.current-menu-item a {
-  font-family: "OpenSansBold", sans-serif;
+.nav li.current-menu-item a,
+.single-post .nav li.current_page_parent a {
+  font-family: "OpenSansRegular", sans-serif;
   font-weight: bold;
   background: none !important;
   color: #429398 !important;
@@ -1505,12 +1544,19 @@ and more scalable.
 .dev-comment {
   color: #999;
 }
-.stellenangebote {
+.job-liste .stellenangebote,
+.job-liste .post,
+.job-liste .page {
   background: #fff;
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   padding: 2em 10px 10px;
   margin-bottom: 6px;
   overflow: hidden;
+  position: relative;
+}
+.stellenangebote {
+  padding: 10px;
+  background-color: #fff;
   position: relative;
 }
 .stellenangebote .entry-meta {
@@ -1561,6 +1607,23 @@ and more scalable.
   border-color: lightgrey;
   background-color: lightgrey;
 }
+.stellenangebote .archived:before {
+  content: ' ';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 2px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  border-color: #555;
+  background-color: #555;
+}
+.stellenangebote .archived strong {
+  color: white;
+  text-shadow: none;
+  background-color: #429398;
+  padding: 0 5px;
+}
 .stellenangebote h2,
 .stellenangebote h3,
 .stellenangebote p {
@@ -1583,6 +1646,45 @@ and more scalable.
 .stellenangebote h2 a:focus {
   color: #429398;
 }
+.pld-like-dislike-wrap {
+  float: right;
+  margin: -1.5em 0 0 0;
+}
+.pld-common-wrap {
+  min-width: fit-content;
+}
+article.post {
+  margin-bottom: 40px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+}
+article.post h1,
+article.post h3 {
+  font-weight: bold;
+  font-family: "OpenSansBold", sans-serif;
+  padding: 20px 40px 0px 40px;
+}
+article.post h1 a:hover,
+article.post h1 a:focus {
+  text-decoration: underline;
+}
+article.post h1.h2,
+article.post h3.h2 {
+  font-size: 1.4em;
+}
+article.post .byline {
+  color: #333;
+  padding: 0px 40px 10px 40px;
+  border-bottom: 1px dotted #cecece;
+}
+article.post section {
+  padding: 20px 40px;
+}
+article.post footer {
+  padding: 0px 40px;
+  border-top: 1px dotted #cecece;
+}
+
 /* post by id (i.e. post-3) */
 /* general post style */
 /* general article on a page style */
@@ -1662,6 +1764,7 @@ and more scalable.
   margin: 1.1em 0 2.2em;
 }
 .bones_page_navi {
+  padding: 0;
   /* current page link */
 
   /* end .bones_page_navi .bpn-current */
@@ -1682,6 +1785,9 @@ and more scalable.
 .bones_page_navi li {
   float: left;
   margin-left: 10px;
+}
+.bones_page_navi li:first-child {
+  margin-left: 0;
 }
 .bones_page_navi li a {
   padding: 5px 12px;
@@ -1847,7 +1953,7 @@ and more scalable.
 11. COMMENT FORM STYLES
 ******************************************************************/
 .respond-form {
-  margin: 1.5em 10px;
+  border-top: 1px dotted #cecece;
   padding-bottom: 2.2em;
 }
 .respond-form form {
@@ -1868,7 +1974,7 @@ and more scalable.
 .respond-form form textarea {
   padding: 3px 6px;
   background: #efefef;
-  border: 2px solid #cecece;
+  border: 1px solid #cecece;
   line-height: 1.5em;
   /* form validation */
 
@@ -1899,7 +2005,8 @@ and more scalable.
 }
 .respond-form form textarea {
   resize: none;
-  width: 97.3%;
+  /*width: 97.3%;*/
+  width: 100%;
   height: 150px;
 }
 /* comment submit button */
@@ -1917,6 +2024,11 @@ and more scalable.
 .nocomments {
   margin: 0 20px 1.1em;
 }
+
+#comment-form-elements{
+  padding: 0;
+}
+
 /*********************
 12. SIDEBARS & ASIDES
 *********************/
@@ -1969,6 +2081,9 @@ ul#powered-by li {
 }
 #you-rock .icon-external-link {
   font-size: 0.9em;
+}
+.article-footer {
+  margin-top: 30px;
 }
 
 /*
@@ -2243,15 +2358,17 @@ you can add resource intensive styles.
     margin-top: 2.2em;
     */
   }
-  .eingabe-formular fieldset,
-  .gform_wrapper form {
+  .stellenangebote {
+    padding: 2em 30px 1em;
+  }
+  .eingabe-formular fieldset {
     padding: 20px 30px;
+  }
+  .gform_wrapper form {
+    padding: 40px 30px;
   }
   .gform_heading {
     left: 30px;
-  }
-  .stellenangebote {
-    padding: 2em 30px 1em;
   }
   /*********************
   HEADER SYTLES
@@ -2271,13 +2388,18 @@ you can add resource intensive styles.
   .nav li {
     float: left;
     position: relative;
-    margin-right: 22px;
+    margin-right: 15px;
     /*
   		plan your menus and drop-downs wisely.
   		*/
   
     /* showing sub-menus */
   
+  }
+  .nav li#menu-item-73532 {
+    background-position: -45px;
+    padding-left: 20px;
+    background-size: 70% 70% !important;
   }
   .nav li a {
     border-bottom: 0;
@@ -2327,6 +2449,7 @@ you can add resource intensive styles.
   .slogan span a {
     padding: 0px;
   }
+
   /* end .nav */
   /*********************
   SIDEBARS & ASIDES
@@ -2388,6 +2511,10 @@ you can add resource intensive styles.
   /* category widget */
   /* recent-comments widget */
   /* search widget */
+#searchform p span:first-child {
+  margin-right: 1em;
+}
+
   /* text widget */
   /*********************
   FOOTER STYLES
@@ -2575,3 +2702,5 @@ be set to display none.
     display: none;
   }
 }
+
+#post-73435 { margin-bottom: 30px; }

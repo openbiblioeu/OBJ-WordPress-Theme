@@ -52,7 +52,22 @@ Template Name: Stellenangebote Tabelle
 										<td><?php obj_einrichtung(); ?></td>
 										<!--<td>Ort</td>-->
 										<td><?php obj_bewerbungsfrist(); ?></td>
-										<td class="none"><?php foreach($terms_einrichtungstyp as $terms_e) { echo($terms_e); } ?></td>
+										<td class="none">
+											<?php 
+												// foreach($terms_einrichtungstyp as $terms_e) { 
+												// 	// echo($terms_e); 
+												// 	// $parent = ( isset( $terms_e->parent ) ) ? get_term_by( 'id', $terms_e->parent, 'einrichtungstyp' ) : false;
+												// 	if ($terms_e->parent == 0) {
+												// 		echo($terms_e); 
+												// 	} else {
+												// 		// $children = get_term_children( $terms_e, 'einrichtungstyp' );
+												// 		// echo($terms_e . " (" . $children . ")");
+												// 		echo(" (" . $terms_e . ") "); 
+												// 	}
+												// } 
+												echo(implode(' ', $terms_einrichtungstyp));
+											?>
+										</td>
 										<td class="none"><?php foreach($terms_stellentyp as $terms_s) { echo($terms_s); } ?></td>
 									</tr>
 							<?php endwhile; ?>

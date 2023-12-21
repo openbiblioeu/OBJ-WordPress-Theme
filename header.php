@@ -20,8 +20,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 		<!-- icons & favicons (for more: http://www.jonathantneal.com/blog/understand-the-favicon/) -->
-		<link rel="logo" href="<?php echo get_template_directory_uri(); ?>/library/images/objbadge.png">
-		<link rel="apple-touch-icon" href="<?php echo get_template_directory_uri(); ?>/library/images/objbadge.png">
+		<link rel="logo" href="<?php echo get_template_directory_uri(); ?>/library/images/objbadge.jpg">
+		<link rel="apple-touch-icon" href="<?php echo get_template_directory_uri(); ?>/library/images/objbadge.jpg">
 		<link rel="icon" href="<?php echo get_template_directory_uri(); ?>/favicon.png">
 		<!--[if IE]>
 			<link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/favicon.ico">
@@ -47,6 +47,8 @@
 		<link rel="alternate" type="application/rss+xml" title="Praktika" href="https://jobs.openbiblio.eu/stellentyp/praktikum/feed" />
 		<link rel="alternate" type="application/rss+xml" title="Studentische Hilfskräfte" href="https://jobs.openbiblio.eu/stellentyp/studentische-hilfskraft/feed" />
 		<link rel="alternate" type="application/rss+xml" title="Sonstige Stellen" href="https://jobs.openbiblio.eu/stellentyp/sonstiges/feed" />
+
+		<link rel="alternate" type="application/rss+xml" title="Blog" href="https://jobs.openbiblio.eu/blog/feed" />
 
 	</head>
 
@@ -75,8 +77,8 @@
 							<?php bloginfo('description'); ?>
 							<br/>
 							<span>
-								<a href="https://twitter.com/OpenBiblioJobs"><i class="fa fa-twitter fa-lg" aria-label="Twitter"></i>
- @OpenBiblioJobs</a>
+								<a href="https://openbiblio.social/@obj"><i class="fa-brands fa-mastodon fa-lg" aria-label="Mastodon"></i>
+ https://openbiblio.social/@obj</a>
 							</span>
 							<span> &mdash; </span>
 							<span>

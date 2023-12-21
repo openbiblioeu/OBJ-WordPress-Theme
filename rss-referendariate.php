@@ -3,7 +3,7 @@
  * Template Name: Custom RSS Template - Nur aktuelle Referendariate
  */
 $args = array(
-        'posts_per_page' => '5',
+        'posts_per_page' => '100',
         'post_type' => 'stellenangebote',
         'post_status' => 'publish',
         'tax_query' => array(

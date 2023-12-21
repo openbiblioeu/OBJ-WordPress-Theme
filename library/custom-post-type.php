@@ -52,14 +52,14 @@ function custom_post_stellenangebote() {
 			'map_meta_cap' => true,
 			'hierarchical' => false,
 			/* the next one is important, it tells what's enabled in the post editor */
-			'supports' => array( 'title', 'editor', 'author', 'custom-fields', 'revisions', 'sticky')
+			'supports' => array( 'title', 'editor', 'author', 'custom-fields', 'revisions', 'sticky', 'excerpt')
 	 	) /* end of options */
 	); /* end of register post type */
 	
 	/* this adds your post categories to your custom post type */
 	//register_taxonomy_for_object_type('category', 'stellenangebote');
 	/* this adds your post tags to your custom post type */
-	//register_taxonomy_for_object_type('post_tag', 'stellenangebote');
+	register_taxonomy_for_object_type('post_tag', 'stellenangebote');
 	
 } 
 
@@ -69,9 +69,9 @@ function custom_post_stellenangebote() {
 	function obj_custom_menu(){
 		//add_posts_page(__('Drafts'), __('Drafts'), 'read', 'edit.php?post_status=draft&post_type=stellenangebote');
 		add_submenu_page('edit.php?post_type=stellenangebote', 'Veröffentlichte', 'Veröffentlichte', 'read', 'edit.php?post_status=publish&post_type=stellenangebote');
-		add_submenu_page('edit.php?post_type=stellenangebote', __('Drafts'), __('Drafts'), 'read', 'edit.php?post_status=draft&post_type=stellenangebote');
-		add_submenu_page('edit.php?post_type=stellenangebote', __('Trash'), __('Trash'), 'read', 'edit.php?post_status=trash&post_type=stellenangebote');
-		add_submenu_page('edit.php?post_type=stellenangebote', __('Archived'), __('Archived'), 'read', 'edit.php?post_status=archive&post_type=stellenangebote');
+		add_submenu_page('edit.php?post_type=stellenangebote', __('Entwürfe'), __('Entwürfe'), 'read', 'edit.php?post_status=draft&post_type=stellenangebote');
+		add_submenu_page('edit.php?post_type=stellenangebote', __('Papierkorb'), __('Papierkorb'), 'read', 'edit.php?post_status=trash&post_type=stellenangebote');
+		add_submenu_page('edit.php?post_type=stellenangebote', __('Archiviert'), __('Archiviert'), 'read', 'edit.php?post_status=archive&post_type=stellenangebote');
 	}
 
 	//extra submenu item fuer stellenangebote

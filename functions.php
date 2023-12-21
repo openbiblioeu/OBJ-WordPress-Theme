@@ -85,6 +85,16 @@ function bones_register_sidebars() {
 	));
 
 	register_sidebar(array(
+		'id' => 'sidebar2',
+		'name' => __('Sidebar 2', 'bonestheme'),
+		'description' => __('The second (secondary) sidebar.', 'bonestheme'),
+		'before_widget' => '<div id="%1$s" class="widget %2$s">',
+		'after_widget' => '</div>',
+		'before_title' => '<h4 class="widgettitle">',
+		'after_title' => '</h4>',
+	));
+
+	register_sidebar(array(
 		'id' => 'content-info-block',
 		'name' => __('Footer', 'bonestheme'),
 		'description' => __('Hier kommt hin: Beteiligte und Unterstützerinnen. Der Titel des Widgets wird nicht angezeigt.', 'bonestheme'),
@@ -163,9 +173,19 @@ function bones_comments($comment, $args, $depth) {
 
 // Search Form
 function bones_wpsearch($form) {
-	$form = '<form role="search" method="get" id="searchform" action="' . home_url( '/' ) . '" >
-	<label class="screen-reader-text" for="s">' . __('Search for:', 'bonestheme') . '</label>
-	<input type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="'.esc_attr__('Search the Site...','bonestheme').'" />
+  $form = '<form role="search" method="get" id="searchform" action="' . home_url( '/' ) . '" >
+	<label class="screen-reader-text visuallyhidden" for="s">' . __('Search for:', 'bonestheme') . '</label>
+  <input type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="Ort, Bezeichnung o.a." />
+  <p>
+    <span>
+      <input type="radio" id="publish" name="post_status" value="publish" checked>
+      <label for="publish">Aktuelle</label>
+    </span>
+    <span>
+      <input type="radio" id="archive" name="post_status" value="archive">
+      <label for="archive">Archivierte</label>
+    </span>
+  </p>
 	<input type="submit" id="searchsubmit" value="'. esc_attr__('Search') .'" />
 	</form>';
 	return $form;
@@ -185,7 +205,7 @@ function obj_styles_scripts() {
     wp_register_script( 'bootstrap-js', get_stylesheet_directory_uri() . '/library/bootstrap/js/bootstrap.min.js', array(), '', true );
     wp_enqueue_script( 'bootstrap-js' );
     //register font awesome icons styles
-	wp_register_style( 'font-awesome', get_stylesheet_directory_uri() . '/library/css/font-awesome/css/font-awesome.min.css', array(), '', 'all' );
+	wp_register_style( 'font-awesome', get_stylesheet_directory_uri() . '/library/css/fontawesome/css/fontawesome6.css', array(), '', 'all' );
     wp_enqueue_style( 'font-awesome' );
     //DataTables
 	wp_register_style( 'dataTables', get_stylesheet_directory_uri() . '/library/DataTables/datatables.min.css', array(), '', 'all' );
@@ -254,45 +274,35 @@ function obj_maintenance_mode() {
 }
 //add_action('get_header', 'obj_maintenance_mode');
 
+/************* disable xmlrpc ****************/
+function remove_xmlrpc_methods( $methods ) {
+	return array();
+}
+add_filter( 'xmlrpc_methods', 'remove_xmlrpc_methods' );
 
 /************* ADMIN BEREICH *****************/
 
+// Den String in "Bewerbungsfrist" als Zeitstempel in "_bewerbungsfrist_intern" speichern
+// damit wir danach sortieren können
+function obj_convert_and_copy_bewerbungsfrist( $post_id ) {
 
-/**
- * Save post metadata when a post is saved.
- *
- * @param int $post_id The ID of the post.
- */
-function obj_save_metadata( $post_id ) {
-
-    //$slug = 'stellenangebote';
-
-    // If this isn't a 'stellenangebot' post, don't update it.
-    //if ( $slug != $_POST['post_type'] ) {
-    //    return;
-    //}
-
-    // Get the value string in Bewerbungsfrist
-    // see https://developer.wordpress.org/reference/functions/get_post_meta/
-    // If there is no field Bewerbungsfrist
-    // the function get_post_meta returns an empty string or an empty array (if the thrid argument is set to false)
     $string_value = get_post_meta( $post_id, 'Bewerbungsfrist', true );
-    // empty gibt FALSE zurück, wenn var existiert und einen nicht-leeren, von 0 verschiedenen Wert hat. 
-    // Andernfalls wird TRUE zurück gegeben. 
-    // http://php.net/manual/de/function.empty.php
+
     if(!empty($string_value)) {
     	$date_value = strtotime($string_value);
     } else {
     	$date_value = "";
     }
 
-    // Update the post's metadata
     update_post_meta( $post_id, '_bewerbungsfrist_intern', $date_value );
 }
-add_action( 'save_post', 'obj_save_metadata' );
+//add_action( 'save_post', 'obj_convert_and_copy_bewerbungsfrist' );
+// da der obige hook save_post neuerdings nicht mehr greift
+// verwenden wir zusätzlich diese:
+add_action( 'publish_stellenangebote', 'obj_convert_and_copy_bewerbungsfrist', 10, 1 );
+//add_action( 'publish_post', 'obj_convert_and_copy_bewerbungsfrist', 10, 1 );
 
-//add stellenangebote to dashboard right now
-function add_jobs_to_dashboard() {
+function obj_add_jobs_to_dashboard() {
         if (!post_type_exists('stellenangebote')) {
              return;
         }
@@ -322,7 +332,7 @@ function add_jobs_to_dashboard() {
             echo '</tr>';
         }
 }
-add_action('right_now_content_table_end', 'add_jobs_to_dashboard');
+add_action('right_now_content_table_end', 'obj_add_jobs_to_dashboard');
 
 //der Liste Spalten hinzufügen
 add_filter( 'manage_edit-stellenangebote_columns', 'set_custom_edit_stellenangebote_columns' );
@@ -330,7 +340,7 @@ function set_custom_edit_stellenangebote_columns($columns) {
     //unset( $columns['author'] );
     $columns['eingang'] = __( 'Eingang', 'bonestheme' );
     $columns['bewerbungsfrist'] = __( 'Bewerbungsfrist', 'bonestheme' );
-    // $columns['bewerbungsfrist_intern'] = __( 'Bewerbungsfrist intern', 'bonestheme' );
+    $columns['bewerbungsfrist_intern'] = __( 'Bewerbungsfrist intern', 'bonestheme' );
     $columns['geoinfo'] = __( 'Geo-Info', 'bonestheme' );
     return $columns;
 }
@@ -346,9 +356,9 @@ function custom_stellenangebote_column( $column, $post_id ) {
             echo get_post_meta( $post_id , 'Bewerbungsfrist' , true ); 
             break;
 
-        //case 'bewerbungsfrist_intern' :
-        //    echo get_post_meta( $post_id , '_bewerbungsfrist_intern' , true ); 
-        //    break;
+        case 'bewerbungsfrist_intern' :
+            echo get_post_meta( $post_id , '_bewerbungsfrist_intern' , true ); 
+            break;
 
         case 'geoinfo' :
             //echo get_post_meta( $post_id , 'geo_address' , true ); 
@@ -360,7 +370,8 @@ function custom_stellenangebote_column( $column, $post_id ) {
             break;
     }
 }
-//TODO: die Spalten sortierbar machen
+
+// Die Spalten sortierbar machen
 add_filter( 'manage_edit-stellenangebote_sortable_columns', 'set_custom_edit_stellenangebote_sortable_columns' );
 function set_custom_edit_stellenangebote_sortable_columns($columns) {
 	//$columns['eingang'] = 'eingang';
@@ -378,14 +389,18 @@ function custom_edit_stellenangebote_orderby( $query ) {
 	if( 'bewerbungsfrist' == $orderby ) {
 		$query->set('meta_key','_bewerbungsfrist_intern');
 		$query->set('orderby','meta_value_num');
+		// $query->set('meta_key','Bewerbungsfrist');
+		// $query->set('meta_type','DATE');
+		// $query->set('orderby','meta_value');
 	}
 }
 
-//custom post status
+// Eigenen Status "archive" bzw. als Label "Archiviert" registrieren
 function custom_post_status(){
 	register_post_status( 'archive', array(
 		'label'                     => _x( 'Archiviert', 'stellenangebote' ),
 		'public'                    => true,
+		'publicly_queryable'        => true,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
@@ -394,9 +409,9 @@ function custom_post_status(){
 }
 add_action( 'init', 'custom_post_status' );
 
-//custom status "archive" im Admin-Bereich anzeigen und verfügbar machen
-//momentan kann wordpress das nicht, siehe https://core.trac.wordpress.org/ticket/12706
-//thanks to http://jamescollings.co.uk/blog/wordpress-create-custom-post-status/
+// Den  status "archive" im Admin-Bereich anzeigen und verfügbar machen
+// momentan kann wordpress das nicht, siehe https://core.trac.wordpress.org/ticket/12706
+// Daher per jQuery, siehe http://jamescollings.co.uk/blog/wordpress-create-custom-post-status/
 function obj_custom_status() {
      global $post;
      $complete = '';
@@ -419,7 +434,7 @@ function obj_custom_status() {
 //add_action( 'post_submitbox_misc_actions', 'obj_custom_status' );
 add_action( 'admin_footer-post.php', 'obj_custom_status' );
 
-//Status "Archiviert" in Massenbearbeitung zur Auswahl hinzufuegen
+// Status "Archiviert" in Massenbearbeitung zur Auswahl hinzufuegen
 function obj_custom_status_bulk_edit() {
 	echo '
 	<script>
@@ -431,7 +446,7 @@ function obj_custom_status_bulk_edit() {
 }
 add_action( 'admin_footer-edit.php', 'obj_custom_status_bulk_edit' );
 
-//Status "Archiviert" in Liste anzeigen
+// Status "Archiviert" in Liste anzeigen
 function obj_display_archive_state( $states ) {
      global $post;
      $arg = get_query_var( 'post_status' );
@@ -447,7 +462,6 @@ add_filter( 'display_post_states', 'obj_display_archive_state' );
 
 /************* ANZEIGE DER STELLENANGEBOTE *****************/
 
-//show meta for jobs
 function obj_custom_data() {
 	$custom_fields = get_post_custom();
 	$eingang = $custom_fields['Eingang'];
@@ -476,20 +490,24 @@ function obj_custom_data() {
 	);
 	echo('Veröffentlicht am ' . $date . ' von ' . $author . '. ');
 }
-//show just the entry date for jobs
+
+// Das Eingansdatum anzeigen
+// mit zusätzlichen Labels wie Heute, Gestern, Archiviert usw.
 function obj_entry_date() {
 	$custom_fields = get_post_custom();
 	$eingang = $custom_fields['Eingang'];
 	if($eingang != "") {
 		foreach ( $eingang as $key => $value ) {
-      if(strtotime($value) < strtotime('-7 day')) {
-        echo('<span class="whyareyoustilllookingatthis"> Eingang: ' . $value . '</span>');
+      if (is_page_template('page-stellenangebote-archiv.php') || get_post_status() == 'archive') {
+        echo('<span class="archived"> <strong>ARCHIVIERT</strong> | Eingang: ' . $value . '</span>');
+      } elseif (strtotime($value) < strtotime('-7 day')) {
+        echo('<span class="whyareyoustilllookingatthis"> ÄLTER ALS 7 TAGE | Eingang: ' . $value . '</span>');
       } elseif(strtotime($value) < strtotime('-2 day')) {
-        echo('<span class="morethan2days"> Eingang: ' . $value . '</span>');
+        echo('<span class="morethan2days"> ÄLTER ALS 2 TAGE | Eingang: ' . $value . '</span>');
       } elseif(strtotime($value) < strtotime('-1 day')) {
-        echo('<span class="yesterdayallmytroubles"> Eingang: ' . $value . '</span>');
+        echo('<span class="yesterdayallmytroubles"> GESTERN | Eingang: ' . $value . '</span>');
       } else {
-        echo('<span class="itsfresh"> Eingang: ' . $value . '</span>');
+        echo('<span class="itsfresh"> HEUTE | Eingang: ' . $value . '</span>');
       }
 			
 		}
@@ -504,6 +522,21 @@ function obj_entry_date_only() {
       echo( $value );
     }
   }
+}
+
+function obj_entry_status() {
+	$custom_fields = get_post_custom();
+	$eingang = $custom_fields['Eingang'];
+	if($eingang != "") {
+		foreach ( $eingang as $key => $value ) {
+      if (get_post_status() == 'archive') {
+        echo('<span class="archived"> <strong>ARCHIVIERT</strong> | Eingang: ' . $value . '</span>');
+      } else {
+        echo('<span class="itsfresh"> AKTUELL | Eingang: ' . $value . '</span>');
+      }
+			
+		}
+	}
 }
 
 function obj_einrichtung() {
@@ -558,10 +591,33 @@ function obj_get_template_for_custom_rss() {
 
 /************* SUCHE *****************/
 // search filter
+// function obj_search_filter($query) {
+  
+//   if ( !$query->is_admin && $query->is_search) {
+//     $query->set('post_type', array('stellenangebote') ); // id of page or post
+//     //$query->set('post_status', 'publish');
+//   }
+//   return $query;
+// }
+
 function obj_search_filter($query) {
-	if ( !$query->is_admin && $query->is_search) {
-		$query->set('post_type', array('stellenangebote') ); // id of page or post
-		$query->set('post_status', 'publish');
+
+	if (isset($_GET['post_status']) && ($_GET['post_status'] == 'publish' || $_GET['post_status'] == 'archive') ) {
+		$post_status_query = $_GET['post_status'];
+	} else {
+		$post_status_query = '';
+  }
+              
+	if ( !$query->is_admin && $query->is_search() ) {
+		$query->set('post_type', array('stellenangebote') ); 
+    $query->set('paged', get_query_var('paged', 1));
+    $query->set('posts_per_page', '20');
+    $query->set('post_type', 'stellenangebote');
+    $query->set('post_status', $post_status_query);
+    $query->set('orderby', 'date');
+    // $query->set('meta_key', 'Eiingang');
+    // $query->set('order', 'DESC');
+    // $query->set('orderby', 'meta_value');
 	}
 	return $query;
 }
@@ -686,6 +742,43 @@ function obj_add_jsonld_head() {
   }
 }
 
+/************* NAVIGATION *****************/
+function obj_bones_pagination( \WP_Query $wp_query = null, $echo = true ) {
+  if ( null === $wp_query ) {
+    global $wp_query;
+  }
+  $pages = paginate_links( [
+      'base'         => str_replace( 999999999, '%#%', html_entity_decode( get_pagenum_link( 999999999 ) ) ),
+      'format'       => '?paged=%#%',
+      'current'      => max( 1, get_query_var( 'paged' ) ),
+      'total'        => $wp_query->max_num_pages,
+      'type'         => 'array',
+      'show_all'     => false,
+      'end_size'     => 3,
+      'mid_size'     => 1,
+      'prev_next'    => true,
+      'prev_text'    => __( '« Prev' ),
+      'next_text'    => __( 'Next »' ),
+      'add_args'     => false,
+      'add_fragment' => ''
+    ]
+  );
+  if ( is_array( $pages ) ) {
+    //$paged = ( get_query_var( 'paged' ) == 0 ) ? 1 : get_query_var( 'paged' );
+    $pagination = '<nav class="page-navigation"><ol class="bones_page_navi clearfix">';
+    foreach ($pages as $page) {
+                        $pagination .= '<li class="page-item' . (strpos($page, 'current') !== false ? ' active bpn-current' : '') . '"> ' . str_replace('page-numbers', 'page-link', $page) . '</li>';
+                }
+    $pagination .= '</ol></nav>';
+    if ( $echo ) {
+      echo $pagination;
+    } else {
+      return $pagination;
+    }
+  }
+  return null;
+}
+
 /************* ADD HEADER FOR IE *****************/
 function obj_add_ie_header($headers) {
 	$headers['X-UA-Compatible'] = 'IE=edge,chrome=1';
@@ -699,4 +792,24 @@ function load_custom_wp_admin_style() {
 }
 add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 */
+
+/************* Share on Mastodon *****************/
+// siehe https://jan.boddez.net/wordpress/share-on-mastodon#share_on_mastodon_status
+add_filter( 'share_on_mastodon_status', function( $status, $post ) {
+  $tags = get_the_tags( $post->ID );
+
+  if ( $tags ) {
+    // $status .= "\n\n";
+    $status .= "\n";
+    
+    foreach ( $tags as $tag ) {
+      $status .= '#' . preg_replace( '/\s/', '', $tag->name ) . ' ';
+    }
+
+    $status = trim( $status );
+  }
+
+  return $status;
+}, 11, 2 );
+
 ?>
